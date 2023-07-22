@@ -17,10 +17,10 @@ export class TicTacToeNode extends TicTacToe {
           })
         },
         on: {
-          win(instance) {
+          win(instance, {next}) {
             instance.rlInstance.question(`${' '.repeat(8)}Do you wanna play again? y/n: `, (ans) => {
               if (ans == 'y') {
-                instance.tick()
+                next()
               } else {
                 instance.rlInstance.close();
               }

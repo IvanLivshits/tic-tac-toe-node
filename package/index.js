@@ -41,11 +41,16 @@ export class TicTacToe {
     win() {
       const winner = changePlayer(this.currentPlayer)
       console.log(' '.repeat(8) + `Player with sign '${winner}' won!`);
-      this.on?.win?.(this, {
+      const next = () => {
+        this.play()
+      }
+      const winData = {
         winner,
-        board: this.board
-      })
+        board: this.board,
+        next: next.bind(this)
+      }
       this.reset()
+      this.on?.win?.(this, winData)
     }
     play() {
       this.on?.play?.(this)
