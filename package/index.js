@@ -78,12 +78,13 @@ export class TicTacToe {
     }
     tick() {
       this.on?.startTick?.(this)
-      if (this.counter === 9) {
-        console.log(' '.repeat(8) + 'Draw!')
-        return
-      }
+      
       if (this.counter >= 5 && isWin(this.board)) {
         this.win()
+        return
+      } else if (this.counter === 9) {
+        this.on?.draw?.(this)
+        console.log(' '.repeat(8) + 'Draw!')
         return
       }
   
