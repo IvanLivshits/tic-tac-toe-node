@@ -9,17 +9,25 @@ export class TicTacToe {
     counter = 0
     currentPlayer = CONFIG.FIRST_PLAYER
     on
+    errorDuration
     tickCallback
-    constructor({on, tickCallback} = {}) {
-      this.board = initBoard()
+    constructor({on, tickCallback, errorDuration = 5000} = {}) {
+      this.setBoard(initBoard())
       this.on = on
+      this.errorDuration = errorDuration
       this.tickCallback = tickCallback
     }
     setCounter(value) {
       this.counter = value
+      this.on?.setCounter?.(this)
     }
     setPlayer(player) {
       this.currentPlayer = player
+      this.on?.setPlayer?.(this)
+    }
+    setBoard(board) {
+      this.board = board
+      this.on?.setBoard?.(this)
     }
     changePlayer(current = this.currentPlayer) {
       this.setPlayer(changePlayer(current))
@@ -27,7 +35,8 @@ export class TicTacToe {
     reset() {
       this.setCounter(0)
       this.setPlayer(CONFIG.FIRST_PLAYER)
-      this.board = initBoard()
+      this.setBoard(initBoard())
+      this.on?.reset?.(this)
     }
     win() {
       console.log(' '.repeat(8) + `Player with sign '${changePlayer(this.currentPlayer)}' won!`);
@@ -41,12 +50,16 @@ export class TicTacToe {
     print([row,col]) {
       const isConditions = checkConditions(row, col, this.board)
       if (isConditions.status) {
-        this.board[Number(row) - 1][Number(col) - 1] = this.currentPlayer;
+        this.setBoard((() => {
+          const newBoard = [...this.board]
+          newBoard[Number(row) - 1][Number(col) - 1] = this.currentPlayer
+          return newBoard
+        })());
         this.changePlayer()
       } else {
-        setTimeout(() => this.tick(), 5000);
         return {
           error: isConditions,
+          tickResult: new Promise((resolve) => setTimeout(() => resolve(this.tick()), this.errorDuration))
         };
       }
       return {
