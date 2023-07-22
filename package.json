@@ -1,6 +1,6 @@
 {
   "name": "game",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple command-line implementation of the game Tic-Tac-Toe using Node.js",
   "author": "Ivan Livshits",
   "license": "MIT",
