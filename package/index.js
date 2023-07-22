@@ -52,7 +52,18 @@ export class TicTacToe {
       this.reset()
       this.on?.win?.(this, winData)
     }
+    draw() {
+      console.log(' '.repeat(8) + 'Draw!')
+      const next = () => {
+        this.play()
+      }
+      const drawData = {
+        next: next.bind(this)
+      }
+      this.on?.draw?.(this, drawData)
+    }
     play() {
+      this.reset()
       this.on?.play?.(this)
       return this.tick()
     }
@@ -78,17 +89,16 @@ export class TicTacToe {
     }
     tick() {
       this.on?.startTick?.(this)
-      
+      this.setCounter(this.board.flat().reduce((val, cur) => val + (cur === ' ' ? 0 : 1),0))
+      console.log(this.counter)
       if (this.counter >= 5 && isWin(this.board)) {
         this.win()
         return
       } else if (this.counter === 9) {
-        this.on?.draw?.(this)
-        console.log(' '.repeat(8) + 'Draw!')
+        this.draw()
         return
       }
   
-      this.setCounter(this.counter + 1)
   
       if (this.tickCallback) {
         this.on?.endTick?.(this)
